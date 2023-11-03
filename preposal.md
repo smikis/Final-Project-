@@ -6,7 +6,7 @@ TODO
 
 ## If you plan to collaborate with one or two classmates, what are their names?
 
-TODO
+Sarah and Tasnim
 
 ## Do you have any questions of your own?
 
