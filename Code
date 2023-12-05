@@ -3,6 +3,7 @@ pygame.init()
 
 win = pygame.display.set_mode((500,500))
 pygame.display.set_caption("Barbie Dash")
+bg_img = pygame.image.load(os.path.join("Instructions","Background.png"))
 #bg import
 #Sprite import
 
