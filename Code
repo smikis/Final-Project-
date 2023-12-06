@@ -3,7 +3,7 @@ pygame.init()
 
 win = pygame.display.set_mode((500,500))
 pygame.display.set_caption("Barbie Dash")
-bg_img = pygame.image.load(os.path.join("Instructions","Background.png"))
+bg = pygame.image.load('nameofimage.jpeg)
 #bg import
 #Sprite import
 
@@ -15,6 +15,12 @@ vel = 5
 
 isJump = False
 jumpCount = 10
+
+#function to upload image
+def redrawGameWindow():
+    global walkCount    
+    win.blit(bg, (0,0))
+    pygame.display.update()
 
 run = True
 
@@ -60,6 +66,7 @@ while run:
     
     win.fill((0,0,0))
     pygame.draw.rect(win, (255,0,0), (x, y, width, height))   
-    pygame.display.update() 
+    pygame.display.update()
+    redrawGameWindow()
     
 pygame.quit()
