@@ -1,72 +1,113 @@
 import pygame
+from pygame.locals import *
+import os
+import sys
+import math
 pygame.init()
 
-win = pygame.display.set_mode((500,500))
+
+#Initialize Background and sprites
+width, height = 1000, 800
+screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Barbie Dash")
-bg = pygame.image.load('nameofimage.jpeg)
-#bg import
-#Sprite import
+bg2 = pygame.image.load('Background2.jpeg')
+barbie = pygame.image.load('Character1.png')
+barbie = pygame.transform.scale(barbie, (100, 200))
+bg0 = 0.0
+bg02 = bg2.get_width()
+red = (255, 0, 0)
 
-x = 100
-y = 300
-width = 40
-height = 60
-vel = 5
 
-isJump = False
-jumpCount = 10
+#Player Class
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        self.image = barbie
+        self.rect = self.image.get_rect()
+        self.rect.center = (width // 2, height - 50)
+        self.velocity = 0
+        self.jump_height = -20
 
-#function to upload image
+    def update(self):
+        self.velocity += 1
+        self.rect.y += self.velocity
+        if self.rect.bottom > height:
+            self.rect.bottom = height
+            self.velocity = 0
+
+    def jump(self):
+        if self.rect.bottom == height:
+            self.velocity = self.jump_height
+
+            
+#Obstacle Class
+class Obstacle(pygame.sprite.Sprite):
+    def __init__(self, x, y, width, height, speed):
+        super().__init__()
+        self.image = pygame.Surface((width, height))
+        self.image.fill(red)
+        self.rect = self.image.get_rect()
+        self.rect.bottomright = (x, y)
+        self.speed = speed
+
+    def update(self):
+        self.rect.x -= self.speed
+        if self.rect.right < 0:
+            self.rect.left = width
+            self.rect.centery = height - 50
+
+
+#Change background
 def redrawGameWindow():
     global walkCount    
-    win.blit(bg, (0,0))
-    pygame.display.update()
+    screen.blit(bg2, (0,0))
+
+
+
+#Run the Game
+allSprites = pygame.sprite.Group()
+player = Player()
+obstacle = Obstacle(width, height, 50, 50, 5)
+allSprites.add(player, obstacle)
+clock = pygame.time.Clock()
+speed = 100
 
 run = True
-
 while run:
-    pygame.time.delay(25)
+    keys = pygame.key.get_pressed()
+
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            run = False
+            pygame.quit()
+            sys.exit()
+        elif event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP:
+                player.jump()
+                
+    redrawGameWindow() 
+    bg0 -= 1.4  
+    bg02 -= 1.4
 
-    keys = pygame.key.get_pressed()
+    if bg0 < bg2.get_width() * -1:  
+        bg0 = bg2.get_width()
     
-    #if keys[pygame.K_LEFT] and x > vel: 
-        #x -= vel
+    if bg02 < bg2.get_width() * -1:
+        bg02 = bg2.get_width()
 
-    if keys[pygame.K_RIGHT] and x < 500 - vel - width:  
-        x += vel
-        
-    if not(isJump): 
-        if keys[pygame.K_UP]:
-            isJump = True
-
-        #if keys[pygame.K_DOWN] and y < 500 - height - vel:
-            #y += vel
-
-        if keys[pygame.K_SPACE]:
-            isJump = True
-    else:
-        if jumpCount >= -10:
-            y -= (jumpCount * abs(jumpCount)) * 0.5
-            jumpCount -= 1
-        else: 
-            jumpCount = 10
-            isJump = False
-
-    #The code below will only be implented when a background is imported
-    """win.blit(bg, (i, 0))
-    win.blit(bg, (width+i, 0))
-    if i == -width:
-        win.blit(bg, (width+i, 0))
-        i = 0
-    i -= 1"""
+    for event in pygame.event.get():  
+        if event.type == pygame.QUIT: 
+            run = False    
+            pygame.quit() 
+            quit()
     
-    win.fill((0,0,0))
-    pygame.draw.rect(win, (255,0,0), (x, y, width, height))   
-    pygame.display.update()
-    redrawGameWindow()
-    
+        if event.type == USEREVENT+1: 
+            speed += 1 
+
+    allSprites.update()
+    allSprites.draw(screen)
+    clock.tick(60)
+    pygame.display.flip()
 pygame.quit()
+
+
